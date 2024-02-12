@@ -1,6 +1,4 @@
-# sqltool
-MySQL Tool
-
+# MySQL DB Management Tool
 Lightweight command line tool for managing MySQL load / dump processes across development environments
 
 ### Requirements
