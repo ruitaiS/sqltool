@@ -2,7 +2,7 @@
 Lightweight command line tool for managing MySQL load / dump processes across development environments
 
 ### Requirements
-GPG:
+GNU Privacy Guard:
 https://www.gnupg.org/download/index.html
 
 ```
