@@ -1,0 +1,24 @@
+dump file selection
+
+db selection
+
+table selection using multiselect
+
+automatic filename generation
+
+run from config
+
+---
+
+dump should dump the schema + the selected tables into the generated filename
+
+load should load selected dump file into the selected schema
+	tables determined by dump file itself
+
+---
+
+Done:
+2/11:
+Credential Encoding/decoding with gpg
+Environment Selection
+Schema listing
