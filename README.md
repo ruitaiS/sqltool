@@ -24,7 +24,8 @@ Encrypt Using GPG:
 Enable Execution and Run the tool:
 ```
 chmod +x script.sh
-./script.sh```
+./script.sh
+```
 
 ### Menu Options
 [todo]
