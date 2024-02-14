@@ -5,12 +5,13 @@ Lightweight command line tool for managing MySQL load / dump processes across de
 GNU Privacy Guard:
 https://www.gnupg.org/download/index.html
 
+Dialog:
+https://invisible-island.net/dialog/dialog.html
+
 ```
 Debian/Ubuntu:
 sudo apt-get install gpg
-
-CentOS/RHEL:
-sudo yum install gnupg
+sudo apt-get install dialog
 ```
 ### Instructions
 Create a login csv file with headers:
