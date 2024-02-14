@@ -32,6 +32,7 @@ list_schemas() {
 }
 
 select_schema() {
+    clear
     schemas=$(timeout 10 mysql -h "$host" -u "$user" -p"$pass" -e "SHOW DATABASES;" | awk '{if (NR>1) print $1}')
     #echo "$schemas"
     #whiptail "$schemas"
@@ -45,8 +46,9 @@ select_schema() {
     done
 
     # Show menu using whiptail and capture user selection
-    selected_schema=$(whiptail --title "Schema Selection" --menu "Choose a schema:" 20 60 10 "${options[@]}" 3>&1 1>&2 2>&3)
-    #selected_schema=$(whiptail --backtitle "Schema Selection" --backtitle-color "0;30" --menu "Choose a schema:" 20 60 10 "${options[@]}" 3>&1 1>&2 2>&3)
+    #selected_schema=$(whiptail --title "Schema Selection" --menu "Choose a schema:" 20 60 10 "${options[@]}" 3>&1 1>&2 2>&3)
+    selected_schema=$(dialog --stdout --title "Schema Selection" --menu "Choose a schema:" 20 60 10 "${options[@]}")
+    clear
 
     # Check if user pressed Cancel or Escape
     if [ $? -ne 0 ]; then

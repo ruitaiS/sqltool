@@ -1,12 +1,20 @@
-dump file selection
-
-db selection
+Change dialogue box background color
 
 table selection using multiselect
 
-automatic filename generation
+dump file selection from local directory
+
+automatic filename generation - timestamp_schema_tables.sql
+
+load / dump operation parameter confirm screen prior to execute
+
+manage gtid parameters on mysql dump so that it loads properly
 
 run from config
+
+Migrate to dialogue for all menu navigations
+Manage "clear" use so that only relevant information is displayed
+
 
 ---
 
@@ -22,3 +30,6 @@ Done:
 Credential Encoding/decoding with gpg
 Environment Selection
 Schema listing
+
+2/13:
+schema selection
