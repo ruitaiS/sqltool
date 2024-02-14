@@ -18,12 +18,12 @@ list_schemas() {
     schemas=$(timeout 10 mysql -h "$host" -u "$user" -p"$pass" -e "SHOW DATABASES;" | awk '{if (NR>1) print $1}')
     echo ""
 
-if [ -n "$schemas" ]; then
+    if [ -n "$schemas" ]; then
         echo "Schemas on $env: "
         echo ""
         echo "$schemas"
         echo ""
-        
+
     else
         # The command timed out or encountered an error
         echo "Error: Timeout occurred or command failed. Please check connection and/or credentials."
@@ -33,13 +33,13 @@ if [ -n "$schemas" ]; then
 
 whiptail() {
     local databases="$1"
-    
+
     # Convert newline-separated database list to an array
-    IFS=$'\n' read -r -a database_array <<< "$databases"
-    
+    IFS=$'\n' read -r -a database_array <<<"$databases"
+
     # Create a dialog menu
     selected_index=$(whiptail --menu "Select a database:" 15 50 5 "${database_array[@]}" 3>&1 1>&2 2>&3)
-    
+
     # Check if the user made a selection
     if [ $? -eq 0 ]; then
         selected_database="${database_array[$selected_index]}"
@@ -49,10 +49,10 @@ whiptail() {
     fi
 }
 
-select_schema(){
-list_schemas
-echo "$schemas"
-whiptail "$schemas"
+select_schema() {
+    list_schemas
+    echo "$schemas"
+    whiptail "$schemas"
 
 }
 
@@ -65,8 +65,8 @@ dump_data() {
 }
 
 decrypt_credentials() {
-if [ -f "$logins_file" ]; then
-    logins=$(sudo gpg -d "$logins_file")
+    if [ -f "$logins_file" ]; then
+        logins=$(sudo gpg -d "$logins_file")
     else
         echo "Error: No encrypted credentials file found."
         exit 0
@@ -75,70 +75,70 @@ if [ -f "$logins_file" ]; then
 
 assign_credentials() {
     env="$1"
-    read host user pass <<< $(echo "$logins" | awk -F',' -v Environment="$env" '$1 == Environment {print $2" "$3" "$4}')
+    read host user pass <<<$(echo "$logins" | awk -F',' -v Environment="$env" '$1 == Environment {print $2" "$3" "$4}')
 }
 
 # Function to handle 'Change Credentials' option
 select_env() {
     while true; do
-    echo "Current:"
-    echo "Environment: $env"
-    echo "Host: $host"
-    echo "User: $user"
-    echo "Password: $pass"
-    echo ""
-    echo "[Main Menu]>>[3. Select Environment]"
-read -p "Select Environment:
+        echo "Current:"
+        echo "Environment: $env"
+        echo "Host: $host"
+        echo "User: $user"
+        echo "Password: $pass"
+        echo ""
+        echo "[Main Menu]>>[3. Select Environment]"
+        read -p "Select Environment:
 1 - Local
 2 - Dev
 3 - Stabledev
 x - Exit (Keep Current)
 Selection: " choice
 
-	    case $choice in
-		1)
-		assign_credentials 'local'
-		echo ""
-		echo "Updated Environment:"
-    echo "Environment: $env"
-    echo "Host: $host"
-    echo "User: $user"
-    echo "Password: $pass"
-    echo ""
-		break
-		    ;;
-		2)
-		    assign_credentials 'dev'
-		    echo ""
-		    echo "Updated Environment:"
-    echo "Environment: $env"
-    echo "Host: $host"
-    echo "User: $user"
-    echo "Password: $pass"
-    echo ""
-		    break
-		    ;;
-		3)
-		    #change_credentials
-		    assign_credentials 'stabledev'
-		    echo ""
-		    echo "Updated Environment:"
-    echo "Environment: $env"
-    echo "Host: $host"
-    echo "User: $user"
-    echo "Password: $pass"
-    echo ""
-		    break
-		    ;;
-		x)
-		    echo ""
-		    break
-		    ;;
-		*)
-		    echo "Invalid choice."
-		    ;;
-	    esac
-	done
+        case $choice in
+        1)
+            assign_credentials 'local'
+            echo ""
+            echo "Updated Environment:"
+            echo "Environment: $env"
+            echo "Host: $host"
+            echo "User: $user"
+            echo "Password: $pass"
+            echo ""
+            break
+            ;;
+        2)
+            assign_credentials 'dev'
+            echo ""
+            echo "Updated Environment:"
+            echo "Environment: $env"
+            echo "Host: $host"
+            echo "User: $user"
+            echo "Password: $pass"
+            echo ""
+            break
+            ;;
+        3)
+            #change_credentials
+            assign_credentials 'stabledev'
+            echo ""
+            echo "Updated Environment:"
+            echo "Environment: $env"
+            echo "Host: $host"
+            echo "User: $user"
+            echo "Password: $pass"
+            echo ""
+            break
+            ;;
+        x)
+            echo ""
+            break
+            ;;
+        *)
+            echo "Invalid choice."
+            ;;
+        esac
+    done
 }
 
 # Main script
@@ -148,8 +148,8 @@ assign_credentials $env
 echo "Environment: $env"
 echo ""
 while true; do
-echo "[Main Menu]"
-read -p "Select Operation:
+    echo "[Main Menu]"
+    read -p "Select Operation:
 1 - Select Environment (Current: $env)
 2 - Select Database (Current: $database)
 # - Select Tables (Current: $tables)
@@ -159,31 +159,30 @@ q - Quit
 Selection: " choice
 
     case $choice in
-            1)
-        	echo ""
-            select_env
-            ;;
-        2)
+    1)
         echo ""
-            select_schema
-            ;;
-        3)
+        select_env
+        ;;
+    2)
         echo ""
-            dump_data
-            ;;
+        select_schema
+        ;;
+    3)
+        echo ""
+        dump_data
+        ;;
     q)
-            echo "Goodbye!"
-            exit 0
-            ;;
-        Q)
-            echo "Goodbye!"
-            exit 0
-            ;;
-        *)
-        	echo ""
-            echo "Invalid choice."
-            echo ""
-            ;;
+        echo "Goodbye!"
+        exit 0
+        ;;
+    Q)
+        echo "Goodbye!"
+        exit 0
+        ;;
+    *)
+        echo ""
+        echo "Invalid choice."
+        echo ""
+        ;;
     esac
 done
-
