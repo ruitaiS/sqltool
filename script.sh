@@ -8,11 +8,11 @@ user=''
 pass=''
 
 schemas=()
-schema=()
+selected_schema=()
 tables=()
+selected_tables=()
 filename=()
 
-# Function to handle 'Load' option
 list_schemas() {
     echo "Loading data..."
     schemas=$(timeout 10 mysql -h "$host" -u "$user" -p"$pass" -e "SHOW DATABASES;" | awk '{if (NR>1) print $1}')
@@ -31,28 +31,31 @@ list_schemas() {
     fi
 }
 
-whiptail() {
-    local databases="$1"
-
-    # Convert newline-separated database list to an array
-    IFS=$'\n' read -r -a database_array <<<"$databases"
-
-    # Create a dialog menu
-    selected_index=$(whiptail --menu "Select a database:" 15 50 5 "${database_array[@]}" 3>&1 1>&2 2>&3)
-
-    # Check if the user made a selection
-    if [ $? -eq 0 ]; then
-        selected_database="${database_array[$selected_index]}"
-        echo "Selected database: $selected_database"
-    else
-        echo "No database selected."
-    fi
-}
-
 select_schema() {
-    list_schemas
-    echo "$schemas"
-    whiptail "$schemas"
+    schemas=$(timeout 10 mysql -h "$host" -u "$user" -p"$pass" -e "SHOW DATABASES;" | awk '{if (NR>1) print $1}')
+    #echo "$schemas"
+    #whiptail "$schemas"
+    # Convert the list into an array for easier manipulation
+    IFS=$'\n' read -r -d '' -a schema_array <<<"$schemas"
+
+    # Create an array to store menu options
+    options=()
+    for schema in "${schema_array[@]}"; do
+        options+=("$schema" "")
+    done
+
+    # Show menu using whiptail and capture user selection
+    selected_schema=$(whiptail --title "Schema Selection" --menu "Choose a schema:" 20 60 10 "${options[@]}" 3>&1 1>&2 2>&3)
+    #selected_schema=$(whiptail --backtitle "Schema Selection" --backtitle-color "0;30" --menu "Choose a schema:" 20 60 10 "${options[@]}" 3>&1 1>&2 2>&3)
+
+    # Check if user pressed Cancel or Escape
+    if [ $? -ne 0 ]; then
+        echo "No schema selected. Exiting."
+        exit 1
+    fi
+
+    # Print selected schema for verification
+    echo "Selected schema: $selected_schema"
 
 }
 
@@ -151,8 +154,8 @@ while true; do
     echo "[Main Menu]"
     read -p "Select Operation:
 1 - Select Environment (Current: $env)
-2 - Select Database (Current: $database)
-# - Select Tables (Current: $tables)
+2 - Select Database (Current: $selected_schema)
+# - Select Tables (Current: $selected_tables)
 # - Create Dump File (Filename: $filename)
 # - Load Dump File
 q - Quit
