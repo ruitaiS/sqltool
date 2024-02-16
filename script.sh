@@ -27,15 +27,53 @@ assign_credentials() {
     read host user pass <<<$(echo "$logins" | awk -F',' -v Environment="$env" '$1 == Environment {print $2" "$3" "$4}')
 }
 
+select_env() {
+prompt="Environment: $env\nHost: $host\nUser: $user\nPassword: $pass"
+options=(
+    1 "Local"
+    2 "Dev"
+    3 "Stabledev"
+    x "Back (Keep Current)"
+)
+
+selection=$(dialog --stdout --title "Select Environment" --ok-label "Select" --cancel-label "Back" --menu "$prompt" 20 60 10 "${options[@]}" )
+if [ $? -eq 1 ]; then
+    clear
+    return
+fi
+
+        case $selection in
+        1)
+            assign_credentials 'local'
+            clear
+            return
+            ;;
+        2)
+            assign_credentials 'dev'
+            clear
+            return
+            ;;
+        3)
+            assign_credentials 'stabledev'
+            clear
+            return
+            ;;
+        x)
+            clear
+            return
+            ;;
+        esac
+}
+
 decrypt_credentials
 assign_credentials $env
 
-prompt="Environment: $env\nSelect Operation:"
+prompt="Environment: $env\nDatabase: $selected_schema\nTables: $selected_tables\nFilename: $filename"
 options=(
-    1 "Select Environment (Current: $env)"
-    2 "Select Database (Current: $selected_schema)"
-    3 "Select Tables (Current: $selected_tables)"
-    4 "Create Dump File (Filename: $filename)"
+    1 "Change Environment"
+    2 "Select Database"
+    3 "Select Tables"
+    4 "Create Dump File"
     5 "Load Dump File"
     q "Quit"
 )
@@ -51,7 +89,7 @@ fi
 
 case $selection in
     1)
-        #select_env
+        select_env
         ;;
     2)
         #select_schema
