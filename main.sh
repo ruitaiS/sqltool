@@ -70,9 +70,36 @@ fi
 }
 
 # Function to display Select Database menu
-select_database_menu() {
-    dialog --msgbox "Select Database menu placeholder" 10 40
-}
+select_schema_menu() /*{
+    echo "Loading data..."
+    schemas=$(timeout 10 mysql -h "$host" -u "$user" -p"$pass" -e "SHOW DATABASES;" | awk '{if (NR>1) print $1}')
+    echo "$shemas"
+
+    if [ -n "$schemas" ]; then
+        echo "Schemas on $env: "
+        echo ""
+        echo "$schemas" | while read -r schema_name; do
+            options+=("$schema_name" "$schema_name")
+        done
+
+        selection=$(dialog --stdout --title "Select Schema" --menu "Choose a schema:" 20 60 10 "${options[@]}")
+
+        if [ -n "$selection" ]; then
+            echo "Selected schema: $selection"
+            # Set the globally defined $schema variable to the selected schema
+            schema="$selection"
+            echo "Globally defined schema set to: $schema"
+        else
+            echo "No schema selected."
+        fi
+        echo ""
+
+    else
+        # The command timed out or encountered an error
+        echo "Error: Timeout occurred or command failed. Please check connection and/or credentials."
+        echo ""
+    fi
+}*/
 
 # Function to display Select Tables menu
 select_tables_menu() {
@@ -98,7 +125,7 @@ while true; do
     prompt="Environment: $env\nDatabase: $selected_schema\nTables: $selected_tables\nFilename: $filename"
     options=(
         1 "Change Environment"
-        2 "Select Database"
+        2 "Select Schema"
         3 "Select Tables"
         4 "Create Dump File"
         5 "Load Dump File"
@@ -118,7 +145,7 @@ while true; do
             change_environment_menu
             ;;
         2)
-            select_database_menu
+            select_schema_menu
             ;;
         3)
             select_tables_menu
