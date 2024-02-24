@@ -28,8 +28,45 @@ assign_credentials() {
 }
 
 # Function to display Change Environment menu
+#change_environment_menu() {
+    #dialog --msgbox "Change Environment menu placeholder" 10 40
+#}
+
 change_environment_menu() {
-    dialog --msgbox "Change Environment menu placeholder" 10 40
+prompt="Environment: $env\nHost: $host\nUser: $user\nPassword: $pass"
+options=(
+    1 "Local"
+    2 "Dev"
+    3 "Stabledev"
+    x "Back (Keep Current)"
+)
+
+selection=$(dialog --stdout --title "Select Environment" --ok-label "Select" --cancel-label "Back" --menu "$prompt" 20 60 10 "${options[@]}" )
+if [ $? -eq 1 ]; then
+    clear
+    return
+fi
+        case $selection in
+        1)
+            assign_credentials 'local'
+            clear
+            return
+            ;;
+        2)
+            assign_credentials 'dev'
+            clear
+            return
+            ;;
+        3)
+            assign_credentials 'stabledev'
+            clear
+            return
+            ;;
+        x)
+            clear
+            return
+            ;;
+        esac
 }
 
 # Function to display Select Database menu
