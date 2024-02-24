@@ -41,7 +41,6 @@ if [ $? -eq 1 ]; then
     clear
     return
 fi
-
         case $selection in
         1)
             assign_credentials 'local'

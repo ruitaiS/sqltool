@@ -1,3 +1,22 @@
+2/23:
+Menu navigation doesn't work after switching to dialog. Probably should have kept it as-is and functional instead of trying to trying to overhaul everything at once. Made this mistake before :/
+
+Committed to it now I guess. Bite off more than you can chew and then chew it.
+
+Added a template which seems to work ok. Will work on incorporating the bits of the main logic back into it.
+
+I notice that I'm substantially less motivated to work on these projects than I am for my day job, and I want to change that. I know I can work harder. I know I have the time for it. It's really all the same; the distinction is arbitrary. Progress is progress. If anything, I should be more motivated because it's for me and nobody else.
+
+2/13:
+schema selection
+
+2/11:
+Credential Encoding/decoding with gpg
+Environment Selection
+Schema listing
+
+---Todos / Bugs:
+
 Change dialogue box background color
 
 table selection using multiselect
@@ -22,14 +41,3 @@ dump should dump the schema + the selected tables into the generated filename
 
 load should load selected dump file into the selected schema
 	tables determined by dump file itself
-
----
-
-Done:
-2/11:
-Credential Encoding/decoding with gpg
-Environment Selection
-Schema listing
-
-2/13:
-schema selection
