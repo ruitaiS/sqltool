@@ -23,7 +23,7 @@ decrypt_credentials() {
 
 assign_credentials() {
     env="$1"
-    selected_schema='' #TODO: Change back to empty
+    selected_schema=''
     read host user pass <<<$(echo "$logins" | awk -F',' -v Environment="$env" '$1 == Environment {print $2" "$3" "$4}')
 }
 
