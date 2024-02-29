@@ -81,6 +81,7 @@ select_schema_menu() {
         selected_schema=$(dialog --stdout --title "Select Schema" --menu "Choose a schema:" 20 60 10 "${options[@]}")
     else
         #TODO: Make this a dialog screen with an ok button
+        #Should prompt to select a different environment
         echo "Error: Timeout occurred or command failed. Please check connection and/or credentials."
         echo ""
     fi
