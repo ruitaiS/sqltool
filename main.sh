@@ -9,8 +9,6 @@ user=''
 pass=''
 
 
-schemas=()
-tables=()
 selected_tables=()
 filename=()
 
@@ -25,7 +23,7 @@ decrypt_credentials() {
 
 assign_credentials() {
     env="$1"
-    selected_schema=''
+    selected_schema='' #TODO: Change back to empty
     read host user pass <<<$(echo "$logins" | awk -F',' -v Environment="$env" '$1 == Environment {print $2" "$3" "$4}')
 }
 
@@ -88,7 +86,25 @@ select_schema_menu() {
 }
 
 select_tables_menu() {
-    dialog --msgbox "Select Tables menu placeholder" 10 40
+    #TODO: Verify there is a schema selected first
+    tables=$(timeout 10 mysql -h "$host" -u "$user" -p"$pass" -e "USE $selected_schema; SHOW TABLES;" | awk '{if (NR>1) print $1}')
+    #echo ""
+
+    if [ -n "$tables" ]; then
+        #echo "Schemas on $env: "
+        #echo ""
+        options=()
+        while IFS= read -r table_name; do
+            options+=("$table_name" "" off) #TODO: Remember the on/off state until the schema or the env changes
+        done <<< "$tables"
+        selected_tables=$(dialog --stdout --title "Select Tables" --checklist "Choose tables (Space to Select; Enter to Accept):" 20 60 10 "${options[@]}")
+
+    else
+        #TODO: Make this a dialog screen with an ok button
+        #Should prompt to select a different environment
+        echo "Error: Timeout occurred or command failed. Please check connection and/or credentials."
+        echo ""
+    fi
 }
 
 create_dump_file_menu() {
